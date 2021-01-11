@@ -11,6 +11,8 @@
     <link href="https://fonts.googleapis.com/css?family=Roboto:300,400,500,700&display=swap" rel="stylesheet" />
     <!-- MDB -->
     <link href="https://cdnjs.cloudflare.com/ajax/libs/mdb-ui-kit/3.0.0/mdb.min.css" rel="stylesheet" />
+    <!-- Styles -->
+    <link rel="stylesheet" href="css/styles.css">
     <!-- Vue JS 2 -->
     <script src="https://cdn.jsdelivr.net/npm/vue@2/dist/vue.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/vue@2"></script>
@@ -18,18 +20,56 @@
 
 <body>
     <div id="lista_compras">
-        <h1>{{ header.toLocaleUpperCase() }}</h1>
-        <div>
-            <div class="form-outline mb-4">
-                <input type="text" id="form4Example1" class="form-control" v-model="newCompra" v-on:keyup.enter="compras.push(newCompra)" />
-                <label class="form-label" for="form4Example1">Agregar nuevo</label>
+        <div class="card text-center m-3">
+            <div class="card-body">
+              <h5 class="card-title">{{ header.toLocaleUpperCase() }}</h5>
             </div>
-            <button type="button" class="btn btn-primary" v-on:click="compras.push(newCompra)">Agregar Elemento</button>
+          </div>
 
+        <!-- Button trigger modal -->
+        <button type="button" class="btn btn-primary btn-lg btn-floating position-absolute bottom-0 end-0 m-4" data-mdb-toggle="modal" data-mdb-target="#exampleModal">
+            <i class="fas fa-plus"></i>          
+        </button>
+
+        <!-- Modal -->
+        <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+            <div class="modal-dialog modal-dialog-centered">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="exampleModalLabel">Agregar Compra</h5>
+                        <button type="button" class="btn-close" data-mdb-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body">
+                        <div class="form-outline mb-4">
+                            <input type="text" id="form4Example1" class="form-control" v-model="newCompra" @keyup.enter="guardarElemento" />
+                            <label class="form-label" for="form4Example1">Agregar nuevo</label>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-danger" data-mdb-dismiss="modal">Cerrar</button>
+                        <button type="button" class="btn btn-primary" @click="guardarElemento" v-bind:disabled="newCompra.length === 0" data-mdb-dismiss="modal">Agregar Elemento</button>
+                    </div>
+                </div>
+            </div>
         </div>
-        <ul>
-            <li v-for="compra in compras">{{compra}}</li>
-        </ul>
+
+        <div class="card mb-12 m-5" :class="{comprado : compra.estado}" v-for="compra in CompraReversa">
+            <div class="row g-0">
+                <div class="col-md-11">
+                    <div class="card-body">
+                        <h5 class="card-title">{{compra.producto}}</h5>
+                    </div>
+                </div>
+                <div class="col-md-1 p-3">
+                    <button type="button" class="btn btn-success" @click="cambiarEstado(compra)"  >Comprado</button>
+                </div>
+            </div>
+        </div>
+
+        <p v-if="compras.length === 0">
+            No existen elementos en la lista
+        </p>
+
     </div>
 </body>
 <script>
@@ -39,10 +79,37 @@
             header: 'Listado de Compras',
             newCompra: '',
             compras: [
-                '10 Arroz',
-                '15 Aceite',
-                '5 Durena'
+                {
+                    producto:'10 Libras de Arroz',
+                    estado: false,
+                },
+                {
+                    producto:'15 Litros de Aceite',
+                    estado: false,
+                },
+                {
+                    producto:'5 Cajas de Durena',
+                    estado: false,
+                },
+
             ]
+        },
+        computed:{
+            CompraReversa : function() {
+                return this.compras.slice(0).reverse();
+            }
+        },
+        methods: {
+            guardarElemento: function() {
+                this.compras.push({
+                    producto: this.newCompra,
+                    estado: false
+                });
+                this.newCompra = '';
+            },
+            cambiarEstado: function(compra){
+                compra.estado = !compra.estado;
+            }
         }
     });
 </script>
