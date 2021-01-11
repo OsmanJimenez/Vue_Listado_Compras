@@ -53,15 +53,16 @@
             </div>
         </div>
 
-        <div class="card mb-12 m-5" :class="{comprado : compra.estado}" v-for="compra in CompraReversa">
+        <div class="card mb-12 m-5" :class="{comprado : compra.estado}" v-for="compra, index in compras">
             <div class="row g-0">
-                <div class="col-md-11">
+                <div class="col-md-10">
                     <div class="card-body">
                         <h5 class="card-title">{{compra.producto}}</h5>
                     </div>
                 </div>
-                <div class="col-md-1 p-3">
-                    <button type="button" class="btn btn-success" @click="cambiarEstado(compra)"  >Comprado</button>
+                <div class="col-md-2 p-3">
+                    <button type="button" class="btn btn-danger" @click="eliminar(index)" >Eliminar</button>
+                    <button type="button" class="btn btn-success" @click="cambiarEstado(compra)" >Comprado</button>
                 </div>
             </div>
         </div>
@@ -94,11 +95,6 @@
 
             ]
         },
-        computed:{
-            CompraReversa : function() {
-                return this.compras.slice(0).reverse();
-            }
-        },
         methods: {
             guardarElemento: function() {
                 this.compras.push({
@@ -109,6 +105,9 @@
             },
             cambiarEstado: function(compra){
                 compra.estado = !compra.estado;
+            },
+            eliminar: function (index) {
+                this.compras.splice(index, 1);
             }
         }
     });
